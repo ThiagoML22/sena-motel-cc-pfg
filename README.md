@@ -1,14 +1,20 @@
-# Proyecto de Grado - Sistema SaaS de Gestión para Motel C.C.
+# Sistema de Procesamiento de Transacciones (TPS) - Motel C.C.
+Repositorio oficial del proyecto de grado para la gestión SaaS multi-inquilino de alojamientos por turnos.
 
-**Cátedra:** Proyecto Final de Grado / Actividad de Evaluación 1 (AE1)  
-**Institución:** Universidad Cuenca del Plata (UCP) - Sede Posadas, Misiones  
-**Autor:** Thiago Leal  
-**Organización Cliente:** Motel C.C.  
+## Enlaces de Interés del Proyecto
+- **Tablero de Gestión (Trello):** [Acceso al Tablero Trello](https://trello.com/invite/b/6a99fdb1fc039c2cb22ed18d/ATTIdb3bba91719943830dd1a31407b21c3f6624A0AA/proyecto-de-grado)
+- **Prototipo UI/UX v0 (Figma):** [Acceso al Prototipo en Figma](https://www.figma.com/design/KZqjSk1dpEXaXIqSqI5dQL/Prototipo-AE1-Proyecto?node-id=0-1&t=8y8STXw5UH1HEyah-1)
 
 ---
 
-## 📌 Descripción del Proyecto
-Este repositorio contiene la documentación formal, relevamiento, especificación técnica y evidencia de campo del proyecto de tesis para el desarrollo de un **Sistema de Procesamiento de Transacciones (TPS)** bajo arquitectura **Software as a Service (SaaS) Multi-inquilino**, diseñado para optimizar la gestión operativa, logística y financiera del establecimiento de alojamiento por turnos **Motel C.C.** en Posadas, Misiones.
+## 📌 Documentación del Proyecto
+- **Cátedra:** Proyecto Final de Grado / Actividad de Evaluación 1 (AE1)  
+- **Institución:** Universidad Cuenca del Plata (UCP) - Sede Posadas, Misiones  
+- **Autor:** Thiago Leal  
+- **Organización Cliente:** Motel C.C.  
+
+### 📄 Documento de Entrega (PDF Final)
+👉 [`docs/AE1-LEAL.pdf`](docs/AE1-LEAL.pdf)
 
 ---
 
@@ -20,14 +26,11 @@ Este repositorio contiene la documentación formal, relevamiento, especificació
 │   ├── AE1-LEAL.pdf                            # PDF Final consolidado AE1
 │   ├── Capitulo_I_Definicion_del_Proyecto.md   # Capítulo I completo
 │   ├── Capitulo_II_Relevamiento_e_Investigacion_de_Mercado.md # Capítulo II completo
-│   ├── Anexos_y_Bibliografia.md                # Bibliografía, ODS y Anexos I, II, III
-│   └── README.md                               # Índice de documentos
+│   └── Anexos_y_Bibliografia.md                # Bibliografía, ODS y Anexos I, II, III
 ├── prototype/
-│   ├── prototipo_v0.md                         # Especificación del prototipo v0 y máquina de estados
-│   └── README.md                               # Guía del módulo de prototipado
+│   └── prototipo_v0.md                         # Especificación del prototipo v0 y máquina de estados
 ├── portfolio_evidys/
-│   ├── relevamiento_campo.md                   # Evidencias de campo, entrevistas y TPA/TDC
-│   └── README.md                               # Guía del portfolio de evidencias
+│   └── relevamiento_campo.md                   # Evidencias de campo, entrevistas y TPA/TDC
 ├── .gitignore
 └── README.md                                   # Documento principal de presentación
 ```
@@ -36,29 +39,7 @@ Este repositorio contiene la documentación formal, relevamiento, especificació
 
 ## 📖 Resumen de Contenidos
 
-### [Capítulo I: Definición del Proyecto](docs/Capitulo_I_Definicion_del_Proyecto.md)
-- **Origen:** Disfunción operativa estructural por uso de tableros de madera y fichas de papel (10x10 cm).
-- **Línea de Base:** Tiempo Promedio de Arqueo (TPA) = 17 min, Tasa de Discrepancia de Caja (TDC) = 10%.
-- **Objetivo General:** Implementar el MVP del sistema web reduciendo el TPA a menos de 5 min y la TDC al 0% en 8 semanas.
-- **Arquitectura:** SaaS Multi-tenant con Aislamiento por Fila (RLS) y Cierre de Caja Ciego con Bitácora *Append-Only Log*.
-
-### [Capítulo II: Relevamiento e Investigación de Mercado](docs/Capitulo_II_Relevamiento_e_Investigacion_de_Mercado.md)
-- **Fuentes & Instrumentos:** Entrevista presencial con la gerencia (C.C.) el 03/09/2026 y observación directa no participante.
-- **Análisis Macro & Micro:** Modelos PESTEL, FODA, 5 Fuerzas de Porter, Marco Legal (Ley 25.326) e Infraestructura Cloud (AWS us-east-1).
-- **Sector SSI:** Encuadre del sector tecnológico en Posadas (Polo TIC / Silicon Misiones) y salarios CESSI Q3 2026.
-- **Conclusiones:** Eliminación de descuadres mediante bitácora inmutable y máquina de estados finita en backend.
-
-### [Prototipo v0 (MVP)](prototype/prototipo_v0.md)
-- Panel de conserjería reactivo (13 habitaciones).
-- Flujo de transiciones de estado (`Disponible` ➔ `Ocupada` ➔ `En Limpieza`).
-- Cierre de caja ciego anti-fraude y registro de contingencias (`TURNO_ANULADO`).
-
-### [Portfolio de Evidencias](portfolio_evidys/relevamiento_campo.md)
-- Ficha técnica del trabajo de campo y auditoría documental in situ.
-- Declaración expresa de coautoría del Encuadre Común del Sector SSI (Anexo III).
-
----
-
-## 📄 Documento de Entrega (PDF Final)
-El documento formal impreso/digital de la AE1 se encuentra disponible en:  
-👉 [`/docs/AE1-LEAL.pdf`](docs/AE1-LEAL.pdf)
+- **[Capítulo I: Definición del Proyecto](docs/Capitulo_I_Definicion_del_Proyecto.md)**: Origen, Línea de Base (TPA 17m, TDC 10%), Objetivos, ODS 8, Alcance MVP SaaS.
+- **[Capítulo II: Relevamiento e Investigación de Mercado](docs/Capitulo_II_Relevamiento_e_Investigacion_de_Mercado.md)**: Entrevista C.C., Observación directa, PESTEL, FODA, 5 Fuerzas, Sector SSI, Conclusiones.
+- **[Prototipo v0 (MVP)](prototype/prototipo_v0.md)**: Panel de conserjería reactivo (13 habitaciones), Cierre de caja ciego, `TURNO_ANULADO`.
+- **[Portfolio de Evidencias](portfolio_evidys/relevamiento_campo.md)**: Trabajo de campo in situ, auditoría documental, Coautoría SSI.
