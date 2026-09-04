@@ -16,8 +16,8 @@ Este repositorio contiene la documentación formal, relevamiento, especificació
 
 ```text
 .
+├── AE1-LEAL.pdf                                # PDF Final consolidado AE1
 ├── docs/
-│   ├── AE1_Proyecto_de_Grado_Motel_CC.pdf      # PDF Final consolidado AE1
 │   ├── Capitulo_I_Definicion_del_Proyecto.md   # Capítulo I completo
 │   ├── Capitulo_II_Relevamiento_e_Investigacion_de_Mercado.md # Capítulo II completo
 │   ├── Anexos_y_Bibliografia.md                # Bibliografía, ODS y Anexos I, II, III
@@ -61,4 +61,4 @@ Este repositorio contiene la documentación formal, relevamiento, especificació
 
 ## 📄 Documento de Entrega (PDF Final)
 El documento formal impreso/digital de la AE1 se encuentra disponible en:  
-👉 [`/docs/AE1_Proyecto_de_Grado_Motel_CC.pdf`](docs/AE1_Proyecto_de_Grado_Motel_CC.pdf)
+👉 [`AE1-LEAL.pdf`](AE1-LEAL.pdf)
