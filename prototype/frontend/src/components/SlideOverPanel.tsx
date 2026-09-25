@@ -1,25 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { X, Plus, Minus, CreditCard, Banknote, Receipt } from 'lucide-react';
-import { HabitacionConDetalles, Articulo, TurnoResumen } from '../types';
+import { X, Plus, Minus, CreditCard, Banknote, Receipt, Car, Bike, Footprints } from 'lucide-react';
+import { HabitacionConDetalles, Articulo, TurnoResumen, TipoCliente } from '../types';
 import { api } from '../services/api';
 
 interface SlideOverPanelProps {
   room: HabitacionConDetalles;
   onClose: () => void;
-  onAperturaTurno?: (patente: string) => void;
+  onAperturaTurno?: (patente: string, tipoCliente: TipoCliente) => void;
   onRefreshRooms?: () => void;
+  initialAddProduct?: boolean;
 }
 
-const SlideOverPanel: React.FC<SlideOverPanelProps> = ({ room, onClose, onAperturaTurno, onRefreshRooms }) => {
+const SlideOverPanel: React.FC<SlideOverPanelProps> = ({ room, onClose, onAperturaTurno, onRefreshRooms, initialAddProduct = false }) => {
   const isOcupada = room.estado === 'Ocupada';
   const isLibre = room.estado === 'Libre';
   const isLimpieza = room.estado === 'En Limpieza';
   
   const [patente, setPatente] = useState('');
+  const [tipoCliente, setTipoCliente] = useState<TipoCliente>('Auto');
   
   const [resumen, setResumen] = useState<TurnoResumen | null>(null);
   const [articulos, setArticulos] = useState<Articulo[]>([]);
-  const [addingProduct, setAddingProduct] = useState(false);
+  const [addingProduct, setAddingProduct] = useState(initialAddProduct);
   const [quantities, setQuantities] = useState<Record<number, number>>({});
   
   const [isCheckout, setIsCheckout] = useState(false);
@@ -65,8 +67,14 @@ const SlideOverPanel: React.FC<SlideOverPanelProps> = ({ room, onClose, onApertu
         }
       }
       setQuantities({});
-      setAddingProduct(false);
-      await loadResumenAndArticulos(resumen.id);
+      
+      if (initialAddProduct) {
+        if (onRefreshRooms) onRefreshRooms();
+        onClose();
+      } else {
+        setAddingProduct(false);
+        await loadResumenAndArticulos(resumen.id);
+      }
     } catch (e: any) {
       alert(e.response?.data?.detail || "Error al agregar consumo");
     }
@@ -97,6 +105,13 @@ const SlideOverPanel: React.FC<SlideOverPanelProps> = ({ room, onClose, onApertu
       }
   };
 
+  const handleApertura = () => {
+    if (!onAperturaTurno) return;
+    const identificador = tipoCliente === 'Peaton' ? 'S/V' : patente.trim();
+    if (tipoCliente !== 'Peaton' && !identificador) return;
+    onAperturaTurno(identificador, tipoCliente);
+  };
+
   return (
     <>
       <div className="fixed inset-0 bg-slate-900/20 backdrop-blur-sm z-50 transition-opacity" onClick={onClose} />
@@ -118,18 +133,42 @@ const SlideOverPanel: React.FC<SlideOverPanelProps> = ({ room, onClose, onApertu
         <div className="flex-1 overflow-y-auto">
           {isLibre && (
             <div className="p-6">
-               <form onSubmit={(e) => { e.preventDefault(); if (onAperturaTurno) onAperturaTurno(patente.trim()); }}>
+               <form onSubmit={(e) => { e.preventDefault(); handleApertura(); }}>
                   <div className="mb-6">
-                    <label className="block text-sm font-bold text-slate-700 mb-2">Identificador Vehicular</label>
-                    <input 
-                      type="text" autoFocus required
-                      className="w-full border-2 border-gray-200 rounded-lg px-4 py-3 text-lg uppercase focus:border-slate-900 focus:ring-0 outline-none transition-colors"
-                      placeholder="AB 123 CD"
-                      value={patente}
-                      onChange={(e) => setPatente(e.target.value.toUpperCase())}
-                    />
+                    <label className="block text-sm font-bold text-slate-700 mb-3">Tipo de Cliente</label>
+                    <div className="grid grid-cols-3 gap-3">
+                      <button type="button" onClick={() => setTipoCliente('Auto')}
+                        className={`p-3 rounded-xl border-2 flex flex-col items-center justify-center transition-all ${tipoCliente === 'Auto' ? 'border-slate-900 bg-slate-50 text-slate-900 shadow-sm' : 'border-gray-200 text-gray-400 hover:border-gray-300'}`}>
+                        <Car className="w-6 h-6 mb-1.5" />
+                        <span className="text-xs font-bold">Auto</span>
+                      </button>
+                      <button type="button" onClick={() => setTipoCliente('Moto')}
+                        className={`p-3 rounded-xl border-2 flex flex-col items-center justify-center transition-all ${tipoCliente === 'Moto' ? 'border-slate-900 bg-slate-50 text-slate-900 shadow-sm' : 'border-gray-200 text-gray-400 hover:border-gray-300'}`}>
+                        <Bike className="w-6 h-6 mb-1.5" />
+                        <span className="text-xs font-bold">Moto</span>
+                      </button>
+                      <button type="button" onClick={() => setTipoCliente('Peaton')}
+                        className={`p-3 rounded-xl border-2 flex flex-col items-center justify-center transition-all ${tipoCliente === 'Peaton' ? 'border-slate-900 bg-slate-50 text-slate-900 shadow-sm' : 'border-gray-200 text-gray-400 hover:border-gray-300'}`}>
+                        <Footprints className="w-6 h-6 mb-1.5" />
+                        <span className="text-xs font-bold">Peatón</span>
+                      </button>
+                    </div>
                   </div>
-                  <button type="submit" disabled={!patente.trim()} className="w-full bg-slate-900 text-white font-bold py-3.5 rounded-lg hover:bg-slate-800 disabled:opacity-50 transition-colors">
+
+                  {tipoCliente !== 'Peaton' && (
+                    <div className="mb-6">
+                      <label className="block text-sm font-bold text-slate-700 mb-2">Identificador Vehicular</label>
+                      <input 
+                        type="text" autoFocus required
+                        className="w-full border-2 border-gray-200 rounded-lg px-4 py-3 text-lg uppercase focus:border-slate-900 focus:ring-0 outline-none transition-colors"
+                        placeholder="AB 123 CD"
+                        value={patente}
+                        onChange={(e) => setPatente(e.target.value.toUpperCase())}
+                      />
+                    </div>
+                  )}
+
+                  <button type="submit" disabled={tipoCliente !== 'Peaton' && !patente.trim()} className="w-full bg-slate-900 text-white font-bold py-3.5 rounded-lg hover:bg-slate-800 disabled:opacity-50 transition-colors">
                     Ocupar Habitación
                   </button>
                </form>
@@ -235,8 +274,17 @@ const SlideOverPanel: React.FC<SlideOverPanelProps> = ({ room, onClose, onApertu
                       ))}
                   </div>
                   <div className="pt-6 mt-4 border-t border-gray-200 flex space-x-3">
-                      <button onClick={() => {setAddingProduct(false); setQuantities({})}} className="flex-1 bg-white text-slate-700 font-bold py-3 rounded-xl border border-gray-300 hover:bg-gray-50">Volver</button>
-                      <button onClick={handleAddConsumo} className="flex-1 bg-indigo-600 text-white font-bold py-3 rounded-xl hover:bg-indigo-700">Cargar a Cuenta</button>
+                      <button onClick={() => {
+                        if (initialAddProduct) {
+                          onClose();
+                        } else {
+                          setAddingProduct(false); 
+                          setQuantities({});
+                        }
+                      }} className="flex-1 bg-white text-slate-700 font-bold py-3 rounded-xl border border-gray-300 hover:bg-gray-50">
+                        {initialAddProduct ? 'Cancelar' : 'Volver'}
+                      </button>
+                      <button onClick={handleAddConsumo} className="flex-1 bg-indigo-600 text-white font-bold py-3 rounded-xl hover:bg-indigo-700">Guardar en la Cuenta</button>
                   </div>
               </div>
           )}
