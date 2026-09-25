@@ -1,5 +1,6 @@
-from app.core.database import Base
 from sqlalchemy import Column, Integer, String
+
+from app.core.database import Base
 
 
 class Habitacion(Base):

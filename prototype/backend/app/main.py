@@ -1,6 +1,7 @@
-from app.api.v1.endpoints import articulos, habitaciones, turnos
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
+from app.api.v1.endpoints import articulos, habitaciones, turnos
 
 app = FastAPI(title="Motel C.C. API", version="1.0.0")
 

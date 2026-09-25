@@ -2,6 +2,10 @@ import math
 import uuid
 from datetime import datetime, timezone
 
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
+
 from app.core.database import get_db
 from app.models.articulo import Articulo
 from app.models.consumo import Consumo
@@ -10,9 +14,6 @@ from app.models.pago import Pago
 from app.models.turno import Turno
 from app.schemas.articulo import ConsumoCreate
 from app.schemas.turno import PagoCreate, TurnoCreate, TurnoResponse, TurnoResumen
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.future import select
 
 router = APIRouter()
 

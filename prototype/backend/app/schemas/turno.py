@@ -1,7 +1,8 @@
 from datetime import datetime
 
-from app.schemas.articulo import ConsumoResponse
 from pydantic import UUID4, BaseModel
+
+from app.schemas.articulo import ConsumoResponse
 
 
 class TurnoBase(BaseModel):

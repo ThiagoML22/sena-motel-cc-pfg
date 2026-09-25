@@ -2,11 +2,12 @@ import os
 
 import pytest
 import pytest_asyncio
-from app.core.database import Base, get_db
-from app.main import app
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
+
+from app.core.database import Base, get_db
+from app.main import app
 
 # Usar DATABASE_URL_TEST si existe, sino usar una por defecto (útil para CI)
 TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL", "postgresql+asyncpg://postgres:postgres@db:5432/motel_db")
