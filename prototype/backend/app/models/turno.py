@@ -1,8 +1,10 @@
 import uuid
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Numeric
-from sqlalchemy.dialects.postgresql import UUID
 from datetime import datetime, timezone
+
 from app.core.database import Base
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, Numeric, String
+from sqlalchemy.dialects.postgresql import UUID
+
 
 class Turno(Base):
     __tablename__ = "turnos"

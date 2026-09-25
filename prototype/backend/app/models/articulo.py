@@ -1,5 +1,6 @@
-from sqlalchemy import Column, Integer, String, Numeric
 from app.core.database import Base
+from sqlalchemy import Column, Integer, Numeric, String
+
 
 class Articulo(Base):
     __tablename__ = "articulos"

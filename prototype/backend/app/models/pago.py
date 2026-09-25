@@ -1,8 +1,10 @@
 import uuid
-from sqlalchemy import Column, String, Numeric, DateTime, ForeignKey
-from sqlalchemy.dialects.postgresql import UUID
 from datetime import datetime, timezone
+
 from app.core.database import Base
+from sqlalchemy import Column, DateTime, ForeignKey, Numeric, String
+from sqlalchemy.dialects.postgresql import UUID
+
 
 class Pago(Base):
     __tablename__ = "pagos"

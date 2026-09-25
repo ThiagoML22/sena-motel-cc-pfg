@@ -1,8 +1,10 @@
 import uuid
-from sqlalchemy import Column, Integer, Numeric, DateTime, ForeignKey
-from sqlalchemy.dialects.postgresql import UUID
 from datetime import datetime, timezone
+
 from app.core.database import Base
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, Numeric
+from sqlalchemy.dialects.postgresql import UUID
+
 
 class Consumo(Base):
     __tablename__ = "detalles_consumo"

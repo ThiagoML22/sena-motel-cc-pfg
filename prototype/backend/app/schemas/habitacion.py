@@ -1,5 +1,6 @@
+
 from pydantic import BaseModel
-from typing import Optional
+
 
 class HabitacionBase(BaseModel):
     numero: int
@@ -10,9 +11,10 @@ class HabitacionCreate(HabitacionBase):
 
 from app.schemas.turno import TurnoResponse
 
+
 class HabitacionResponse(HabitacionBase):
     id: int
-    turno_activo: Optional[TurnoResponse] = None
+    turno_activo: TurnoResponse | None = None
 
     class Config:
         from_attributes = True

@@ -1,7 +1,8 @@
-from pydantic import BaseModel, UUID4
-from typing import Optional, List
 from datetime import datetime
+
 from app.schemas.articulo import ConsumoResponse
+from pydantic import UUID4, BaseModel
+
 
 class TurnoBase(BaseModel):
     habitacion_id: int
@@ -13,7 +14,7 @@ class TurnoCreate(TurnoBase):
 class TurnoResponse(TurnoBase):
     id: UUID4
     hora_inicio: datetime
-    hora_fin: Optional[datetime] = None
+    hora_fin: datetime | None = None
     estado: str
     tarifa_base: float
     total_sobreturno: float
@@ -25,9 +26,9 @@ class TurnoResponse(TurnoBase):
 
 class TurnoResumen(TurnoResponse):
     minutos_transcurridos: int
-    consumos: List[ConsumoResponse] = []
+    consumos: list[ConsumoResponse] = []
 
 class PagoCreate(BaseModel):
     monto: float
     medio_pago: str
-    comprobante_referencia: Optional[str] = None
+    comprobante_referencia: str | None = None

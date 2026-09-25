@@ -1,12 +1,13 @@
+
 from pydantic import BaseModel
-from typing import Optional
+
 
 class ArticuloBase(BaseModel):
     codigo: str
     descripcion: str
     precio_unitario: float
     stock_actual: int
-    categoria: Optional[str] = None
+    categoria: str | None = None
 
 class ArticuloCreate(ArticuloBase):
     pass
