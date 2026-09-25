@@ -9,6 +9,9 @@ class HabitacionBase(BaseModel):
 class HabitacionCreate(HabitacionBase):
     pass
 
+class HabitacionEstadoUpdate(BaseModel):
+    estado: str
+
 from app.schemas.turno import TurnoResponse
 
 

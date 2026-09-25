@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { HabitacionConDetalles } from './types';
+import { HabitacionConDetalles, TipoCliente } from './types';
 import { api } from './services/api';
 import TopNav from './components/TopNav';
 import RoomsGrid from './components/RoomsGrid';
@@ -11,6 +11,7 @@ function App() {
   const [habitaciones, setHabitaciones] = useState<HabitacionConDetalles[]>([]);
   const [selectedRoom, setSelectedRoom] = useState<HabitacionConDetalles | null>(null);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
+  const [openAddProduct, setOpenAddProduct] = useState(false);
 
   const fetchHabitaciones = async () => {
     try {
@@ -51,15 +52,23 @@ function App() {
 
   const handleRoomClick = (habitacion: HabitacionConDetalles) => {
     setSelectedRoom(habitacion);
+    setOpenAddProduct(false);
     setIsPanelOpen(true);
   };
 
-  const handleTurnoSubmit = async (patente: string) => {
+  const handleAddConsumoClick = (habitacion: HabitacionConDetalles) => {
+    setSelectedRoom(habitacion);
+    setOpenAddProduct(true);
+    setIsPanelOpen(true);
+  };
+
+  const handleTurnoSubmit = async (patente: string, tipoCliente: TipoCliente) => {
     if (!selectedRoom) return;
     try {
       await api.createTurno({
         habitacion_id: selectedRoom.id,
-        identificador_vehicular: patente
+        identificador_vehicular: patente,
+        tipo_cliente: tipoCliente
       });
       setIsPanelOpen(false);
       setSelectedRoom(null);
@@ -67,6 +76,16 @@ function App() {
     } catch (err: any) {
       console.error('Error creating turno:', err);
       alert(err.response?.data?.detail || 'Error al abrir turno');
+    }
+  };
+
+  const handleEstadoChange = async (habitacion: HabitacionConDetalles, newState: string) => {
+    try {
+      await api.updateHabitacionEstado(habitacion.id, newState);
+      await fetchHabitaciones();
+    } catch (err: any) {
+      console.error('Error changing room state:', err);
+      alert(err.response?.data?.detail || 'Error al cambiar el estado de la habitación');
     }
   };
 
@@ -114,7 +133,12 @@ function App() {
 
             {/* Grid */}
             <div className="flex-1">
-              <RoomsGrid habitaciones={habitaciones} onRoomClick={handleRoomClick} />
+              <RoomsGrid 
+                habitaciones={habitaciones} 
+                onRoomClick={handleRoomClick} 
+                onAddConsumo={handleAddConsumoClick} 
+                onChangeEstado={handleEstadoChange}
+              />
             </div>
 
             {/* Bottom Resumen Bar */}
@@ -158,9 +182,10 @@ function App() {
       {isPanelOpen && selectedRoom && (
         <SlideOverPanel
           room={selectedRoom}
-          onClose={() => setIsPanelOpen(false)}
+          onClose={() => { setIsPanelOpen(false); setOpenAddProduct(false); }}
           onAperturaTurno={handleTurnoSubmit}
           onRefreshRooms={fetchHabitaciones}
+          initialAddProduct={openAddProduct}
         />
       )}
     </div>

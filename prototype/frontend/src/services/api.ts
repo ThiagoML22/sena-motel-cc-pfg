@@ -50,5 +50,10 @@ export const api = {
   liberarHabitacion: async (habitacion_id: number) => {
     const response = await axios.patch(`${API_URL}/habitaciones/${habitacion_id}/liberar`);
     return response.data;
+  },
+
+  updateHabitacionEstado: async (habitacion_id: number, estado: string) => {
+    const response = await axios.patch(`${API_URL}/habitaciones/${habitacion_id}/estado`, { estado });
+    return response.data;
   }
 };

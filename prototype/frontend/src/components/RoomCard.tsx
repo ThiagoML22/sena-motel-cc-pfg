@@ -1,15 +1,30 @@
-import React from 'react';
-import { ChevronRight, Timer, Car, Bike, Footprints, ShoppingBag } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { ChevronRight, Timer, Car, Bike, Footprints, ShoppingBag, Settings, Wrench, Sparkles, CheckCircle2 } from 'lucide-react';
 import { HabitacionConDetalles } from '../types';
 
 interface RoomCardProps {
   room: HabitacionConDetalles;
   onClick: (room: HabitacionConDetalles) => void;
   onAddConsumo?: (room: HabitacionConDetalles) => void;
+  onChangeEstado?: (room: HabitacionConDetalles, newState: string) => void;
 }
 
-const RoomCard: React.FC<RoomCardProps> = ({ room, onClick, onAddConsumo }) => {
+const RoomCard: React.FC<RoomCardProps> = ({ room, onClick, onAddConsumo, onChangeEstado }) => {
   const isOcupada = room.estado === 'Ocupada';
+  const [showSettings, setShowSettings] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setShowSettings(false);
+      }
+    };
+    if (showSettings) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showSettings]);
 
   const getStyle = () => {
     switch (room.estado) {
@@ -75,10 +90,18 @@ const RoomCard: React.FC<RoomCardProps> = ({ room, onClick, onAddConsumo }) => {
 
   const hasConsumos = isOcupada && room.turno_activo && room.turno_activo.total_consumos > 0;
 
+  const handleStateChangeClick = (e: React.MouseEvent, state: string) => {
+    e.stopPropagation();
+    setShowSettings(false);
+    if (onChangeEstado) {
+      onChangeEstado(room, state);
+    }
+  };
+
   return (
     <div 
       onClick={() => onClick(room)}
-      className={`bg-white rounded-2xl border-2 p-5 flex flex-col justify-between ${isOcupada ? 'h-[170px]' : 'h-[140px]'} cursor-pointer transition-all hover:shadow-md ${style.cardBorder}`}
+      className={`bg-white rounded-2xl border-2 p-5 flex flex-col justify-between relative ${isOcupada ? 'h-[170px]' : 'h-[140px]'} cursor-pointer transition-all hover:shadow-md ${style.cardBorder}`}
     >
       {/* Header */}
       <div className="flex justify-between items-start">
@@ -95,7 +118,7 @@ const RoomCard: React.FC<RoomCardProps> = ({ room, onClick, onAddConsumo }) => {
             </div>
           )}
         </div>
-        <div className="flex flex-col items-end gap-1.5">
+        <div className="flex flex-col items-end gap-1.5 relative">
           <div className={`flex items-center px-2.5 py-0.5 rounded-full border ${style.badgeBorder}`}>
             <span className={`w-2 h-2 rounded-full mr-1.5 ${style.badgeDot}`}></span>
             <span className={`text-[11px] font-bold uppercase tracking-wider ${style.badgeText}`}>
@@ -136,9 +159,52 @@ const RoomCard: React.FC<RoomCardProps> = ({ room, onClick, onAddConsumo }) => {
               <span className="text-[11px] font-bold">+ Producto</span>
             </button>
           )}
-          <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center border border-gray-100 hover:bg-gray-100 transition-colors">
-            <ChevronRight className="w-4 h-4 text-slate-400" strokeWidth={3} />
-          </div>
+
+          {!isOcupada && (
+            <div className="relative" ref={menuRef}>
+              <button 
+                onClick={(e) => { e.stopPropagation(); setShowSettings(!showSettings); }}
+                className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center border border-gray-100 hover:bg-gray-200 transition-colors text-slate-500"
+              >
+                <Settings className="w-4 h-4" />
+              </button>
+              
+              {showSettings && (
+                <div className="absolute bottom-full right-0 mb-2 w-48 bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden z-50">
+                  {room.estado !== 'Libre' && (
+                    <button 
+                      onClick={(e) => handleStateChangeClick(e, 'Libre')}
+                      className="w-full text-left px-4 py-2.5 text-sm hover:bg-slate-50 flex items-center text-slate-700 border-b border-gray-50"
+                    >
+                      <CheckCircle2 className="w-4 h-4 mr-2 text-emerald-500" /> Disponible
+                    </button>
+                  )}
+                  {room.estado !== 'En Limpieza' && (
+                    <button 
+                      onClick={(e) => handleStateChangeClick(e, 'En Limpieza')}
+                      className="w-full text-left px-4 py-2.5 text-sm hover:bg-slate-50 flex items-center text-slate-700 border-b border-gray-50"
+                    >
+                      <Sparkles className="w-4 h-4 mr-2 text-amber-500" /> Limpieza
+                    </button>
+                  )}
+                  {room.estado !== 'Mantenimiento' && (
+                    <button 
+                      onClick={(e) => handleStateChangeClick(e, 'Mantenimiento')}
+                      className="w-full text-left px-4 py-2.5 text-sm hover:bg-slate-50 flex items-center text-slate-700"
+                    >
+                      <Wrench className="w-4 h-4 mr-2 text-slate-500" /> Mantenimiento
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
+          {isOcupada && (
+            <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center border border-gray-100 hover:bg-gray-100 transition-colors">
+              <ChevronRight className="w-4 h-4 text-slate-400" strokeWidth={3} />
+            </div>
+          )}
         </div>
       </div>
     </div>

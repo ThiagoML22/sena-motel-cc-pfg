@@ -40,3 +40,24 @@ async def liberar_habitacion(habitacion_id: int, db: AsyncSession = Depends(get_
     habitacion.estado = "Libre"
     await db.commit()
     return {"status": "ok"}
+
+from app.schemas.habitacion import HabitacionEstadoUpdate
+
+@router.patch("/{habitacion_id}/estado")
+async def update_estado(habitacion_id: int, estado_in: HabitacionEstadoUpdate, db: AsyncSession = Depends(get_db)):
+    valid_estados = ["Libre", "En Limpieza", "Mantenimiento"]
+    if estado_in.estado not in valid_estados:
+        raise HTTPException(status_code=400, detail="Estado inválido. Debe ser Libre, En Limpieza o Mantenimiento")
+        
+    result = await db.execute(select(Habitacion).where(Habitacion.id == habitacion_id))
+    habitacion = result.scalars().first()
+    
+    if not habitacion:
+        raise HTTPException(status_code=404, detail="Habitación no encontrada")
+        
+    if habitacion.estado == "Ocupada":
+        raise HTTPException(status_code=400, detail="No se puede cambiar manualmente el estado de una habitación Ocupada")
+        
+    habitacion.estado = estado_in.estado
+    await db.commit()
+    return {"status": "ok"}
