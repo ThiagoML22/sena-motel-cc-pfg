@@ -8,6 +8,7 @@ from sqlalchemy.orm import sessionmaker
 
 from app.core.database import Base, get_db
 from app.main import app
+from app.models.habitacion import Habitacion
 
 # Usar DATABASE_URL_TEST si existe, sino usar una por defecto (útil para CI)
 TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL", "postgresql+asyncpg://postgres:postgres@db:5432/motel_db")
@@ -30,16 +31,24 @@ app.dependency_overrides[get_db] = override_get_db
 
 @pytest_asyncio.fixture(scope="session", autouse=True)
 async def setup_database():
-    # En un entorno CI real se dropean y crean tablas
-    # Si estamos apuntando a motel_db productiva/local, esto fallaría si tiene datos.
-    # Por seguridad, en CI asumimos que es una DB limpia y la poblamos con lo mínimo.
-    if os.getenv("CI"):
-        async with engine_test.begin() as conn:
-            await conn.run_sync(Base.metadata.drop_all)
-            await conn.run_sync(Base.metadata.create_all)
-    
+    async with engine_test.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
+        await conn.run_sync(Base.metadata.create_all)
+
+    # Sembrar habitaciones mínimas para los tests
+    async with TestingSessionLocal() as session:
+        session.add_all([
+            Habitacion(id=1, numero=1, tipo="Simple", estado="Libre"),
+            Habitacion(id=2, numero=2, tipo="Simple", estado="Libre"),
+            Habitacion(id=3, numero=3, tipo="Doble", estado="Libre"),
+        ])
+        await session.commit()
+
     yield
-    # Limpieza post test si es necesario
+
+    # Cleanup
+    async with engine_test.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
 
 @pytest_asyncio.fixture
 async def client():
