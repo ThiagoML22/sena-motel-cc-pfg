@@ -38,9 +38,9 @@ async def setup_database():
     # Sembrar habitaciones mínimas para los tests
     async with TestingSessionLocal() as session:
         session.add_all([
-            Habitacion(id=1, numero=1, tipo="Simple", estado="Libre"),
-            Habitacion(id=2, numero=2, tipo="Simple", estado="Libre"),
-            Habitacion(id=3, numero=3, tipo="Doble", estado="Libre"),
+            Habitacion(id=1, numero=1, estado="Libre"),
+            Habitacion(id=2, numero=2, estado="Libre"),
+            Habitacion(id=3, numero=3, estado="Libre"),
         ])
         await session.commit()
 
