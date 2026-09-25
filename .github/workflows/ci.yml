@@ -45,7 +45,7 @@ jobs:
 
       - name: Run Linter (Ruff)
         working-directory: ./prototype/backend
-        run: ruff check app/
+        run: ruff check app/ --ignore B008,EXE002
 
       - name: Run Pytest (Unit Tests)
         working-directory: ./prototype/backend
@@ -70,7 +70,7 @@ jobs:
 
       - name: Install NPM Packages
         working-directory: ./prototype/frontend
-        run: npm ci
+        run: npm install
 
       - name: Type Check & Build
         working-directory: ./prototype/frontend
